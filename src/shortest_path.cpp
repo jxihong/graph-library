@@ -1,7 +1,5 @@
 #include "../include/AdjacencyList.hh"
 
-#include <queue>
-
 template<typename T>
 inline bool operator<(const Node<T> *a, const Node<T> *b) {
   return (a->getWeight() < b->getWeight());
@@ -46,7 +44,8 @@ T Dijkstra(AdjacencyList<T> &g, Node<T> *src, Node<T> *dest, bool print = false)
   
   if (print) { // prints shortest path
     printPath(src, dest, prevNode);
-  }
+    std::cout << " => ";
+ }
 
   return dest->getWeight();
 }
@@ -80,6 +79,7 @@ T BellmanFord(AdjacencyList<T> &g, Node<T> *src, Node<T> *dest, bool print = fal
   
   if (print) {
     printPath(src ,dest, prevNode);
+    std::cout << " => ";
   }
 
   return dest->getWeight();
@@ -101,9 +101,10 @@ void printPath (Node<T> *src, Node<T> *dest, const std::vector<Node<T>* > prev) 
     path.push_back(nodePtr->getID());
   }
 
-  reverse(path.begin(), path.end());
+  reverse(path.begin(), path.end()); // reverses the path to start with source node
   
+  std::cout << "(";
   // prints each node ID, followed by the delimiter '->'
   copy(path.begin(), path.end()-1, std:: ostream_iterator<int>(std::cout, " -> "));
-  std::cout << path.back() << std::endl; //prints last element without the delimiter
+  std::cout << path.back() << ")"; //prints last element without '->'
 }
