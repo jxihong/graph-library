@@ -1,0 +1,8 @@
+# Compiled Objects
+*.o
+
+# Back-up Files
+*~
+
+# Executables
+graph-test

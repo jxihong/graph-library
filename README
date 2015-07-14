@@ -1,0 +1,18 @@
+C++ Graph and Graph Algorithms
+======================================
+
+Written By: Joey Hong
+
+This will be a compilation of my graph implementations, along with various, popular graph algorithms. It is still rather primitive right now, but will be updated on a frequent basis.
+
+----------------------------------------
+
+Them main program can be compiled by typing 'make' in the bash, and 'make zip' will also create a .zip folder of all the files.
+
+To run the program, type in the bash:
+
+./graph-test -f <filename> or
+
+./graph-test < <filename>
+
+A sample input file 'graph.in' has been included to show that the file should look like.
