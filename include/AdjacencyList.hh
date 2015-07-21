@@ -68,7 +68,7 @@ public:
   // Empty graph
   AdjacencyList(bool directed) : _graph(), _nodes(), _isDirected(directed) {}
 
-  // Constructs graph from input of the following format:
+  // Constructs graph from file input of the following format:
   // numNodes numEdges
   // startID endID edgeWeight // Edge 1
   // ...
@@ -127,12 +127,9 @@ AdjacencyList<T>::AdjacencyList(std::istream &input, bool directed)
   
   _nodes.resize(nNodes, nullptr);
 
-  for (size_t i = 0; i < nEdges; i++) {
-    int from, to; // id's of the two nodes
-    T weight;
-      
-    input >> from >> to >> weight;
-    
+  int from, to; // id's of the two nodes
+  T weight;
+  while (input >> from >> to >> weight) {
     addNode(from);
     addNode(to);
     

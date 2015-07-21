@@ -6,6 +6,10 @@
 using namespace std;
 using namespace graph;
 
+/*
+ * Only tests the Adjacency List representation, but testing the Adjacency Matrix representation
+ * should theoretically be identical
+ */
 int main(int argc, char *argv[]) {
  
   ifstream f;
@@ -30,7 +34,7 @@ int main(int argc, char *argv[]) {
   }
 
   istream &in = hasFile ? f : cin;
-    
+  
   auto my_graph = AdjacencyList<double>(in, true);
   cout << fixed << setprecision(1);
   cout << "Graph from File:" << endl;
@@ -47,16 +51,35 @@ int main(int argc, char *argv[]) {
     BFS(my_graph, my_graph.node(0), true);
     cout << endl;
 
+    cout << endl;
+
     cout << "3. Minimum Distance from Node 0 to 5 (Bellman-Ford): "
 	 << BellmanFord(my_graph, my_graph.node(0), my_graph.node(5), true)
 	 << endl;
 
     cout << endl;
+
+    cout << "4. All-Pairs Shortest Path:" << endl;
+
+    vector<vector<double> > distances;
+    
+    FloydWarshall(my_graph, distances);  
+    for (size_t i = 0; i < my_graph.size(); i++) {
+      cout << i << ": ";
+      for (size_t j = 0; j < my_graph.size(); j++) {
+	if (distances[i][j] == numeric_limits<double>::max()) {
+	  cout << j << "|NA, ";
+	}
+	else {
+	  cout << j << "|" << distances[i][j] << ", ";
+	}
+      }
+      cout << endl;
+    }
+
   }
-  catch (runtime_error &e) {
+  catch (const exception &e) {
     cerr << e.what() << endl;
       return -1;
   }
-  return 0;
 }
-

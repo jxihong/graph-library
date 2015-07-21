@@ -1,4 +1,5 @@
 #include "../include/AdjacencyList.hh"
+#include "../include/AdjacencyMatrix.hh"
 
 namespace graph {
 
@@ -13,7 +14,7 @@ namespace graph {
     
     for (auto& edge : g.adjacent(src)) {
       if (edge->getEnd()->getState() == NOT_VISITED) {
-	DFS(g, edge->getEnd());
+	  DFS(g, edge->getEnd());
       }
     }
   }
@@ -31,20 +32,19 @@ namespace graph {
     nodeStack.push(src);
     
     while (!nodeStack.empty()) {
-    auto top = nodeStack.top();
-    nodeStack.pop();
-    
-    if (top->getState() == NOT_VISITED) {
-      top->setState(VISITED);
-      order.push_back(top->getID());
+      auto top = nodeStack.top();
+      nodeStack.pop();
+      
+      if (top->getState() == NOT_VISITED) {
+	top->setState(VISITED);
+	order.push_back(top->getID());
+      }
+      
+      for (auto& edge : g.adjacent(top)) {
+	nodeStack.push(edge->getEnd());
+      }
     }
-    
-    for (auto& edge : g.adjacent(top)) {
-      nodeStack.push(edge->getEnd());
-    }
-    
-    }
-    
+
     if (print) {
       copy(order.begin(), order.end()-1, std::ostream_iterator<int>(std::cout, ", "));
       std::cout << order.back(); // prints last element without the delimiter

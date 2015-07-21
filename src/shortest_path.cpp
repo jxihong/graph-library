@@ -1,4 +1,5 @@
 #include "../include/AdjacencyList.hh"
+#include "../include/AdjacencyMatrix.hh"
 
 namespace graph {
 
@@ -13,7 +14,7 @@ namespace graph {
    * previous node in the order of traversal
    */
   template<typename T>
-  void printPath (Node<T> *src, Node<T> *dest, const std::vector<Node<T>* > prev) {
+  void printPath (Node<T> *src, Node<T> *dest, const std::vector<Node<T>* > &prev) {
     Node<T>* nodePtr = dest;
     
     std::vector<int> path; // traces the path by following vector of previous nodes
@@ -112,4 +113,37 @@ namespace graph {
     return dest->getWeight();
   }
   
+  
+  /*
+   * Finds the all-pairs shortest path
+   */
+  template<typename T, class Graph_T>
+  void FloydWarshall(Graph_T &g, std::vector<std::vector<T> > &dist) {
+    g.reset();
+    
+    // Vector reference gets passed in from outside method
+    dist.resize(g.size(), std::vector<double>(g.size(), std::numeric_limits<T>::max()));
+    
+    for (size_t i = 0; i < g.size(); i++) {
+      dist[i][i] = 0; 
+      // Initialize distances for all edges
+      for (auto &edge : g.adjacent(g.node(i))) {
+	dist[i][edge->getEnd()->getID()] = edge->getWeight();
+      }
+    }
+    
+    for (size_t k = 0; k < g.size(); k++) { 
+      for (size_t i = 0; i < g.size(); i++) { 
+	for (size_t j = 0; j < g.size(); j++) { 
+	  if (dist[i][j] > dist[i][k] + dist[k][j]) {
+	    dist[i][j] =  dist[i][k] + dist[k][j];
+	  }
+	}
+      }
+    }
+
+    if (hasNegativeCycle(g)) {
+       throw std::runtime_error("Graph contains negative-weight cycle");
+    }
+  }
 }
