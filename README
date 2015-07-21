@@ -7,7 +7,7 @@ This will be a compilation of my graph implementations, along with various, popu
 
 ----------------------------------------
 
-Them main program can be compiled by typing 'make' in the bash, and 'make zip' will also create a .zip folder of all the files.
+The main program can be compiled by typing 'make' in the bash, and 'make zip' will also create a .zip folder of all the files.
 
 To run the program, type in the bash:
 

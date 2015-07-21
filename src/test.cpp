@@ -1,10 +1,10 @@
-#include "../include/AdjacencyList.hh"
 #include "shortest_path.cpp"
 #include "search.cpp"
 
 #include <iomanip>
 
 using namespace std;
+using namespace graph;
 
 int main(int argc, char *argv[]) {
  
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     cout << endl;
 
     cout << "3. Minimum Distance from Node 0 to 5 (Bellman-Ford): "
-	 << BellmanFord<double>(my_graph, my_graph.node(0), my_graph.node(5), true)
+	 << BellmanFord(my_graph, my_graph.node(0), my_graph.node(5), true)
 	 << endl;
 
     cout << endl;
