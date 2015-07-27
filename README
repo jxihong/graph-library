@@ -3,7 +3,10 @@ C++ Graph and Graph Algorithms
 
 Written By: Joey Hong
 
-This will be a compilation of my graph implementations, along with various, popular graph algorithms. It is still rather primitive right now, but will be updated on a frequent basis.
+This is a compilation of my graph implementations, along with various, 
+popular graph algorithms. This was inspired by a topcoder article on graphs and graph algorithms.
+
+(https://www.topcoder.com/community/data-science/data-science-tutorials/introduction-to-graphs-and-their-data-structures-section-1/)
 
 ----------------------------------------
 
