@@ -1,38 +1,18 @@
 #include "../include/AdjacencyList.hh"
 #include "../include/AdjacencyMatrix.hh"
 
+
+// Forward declaration of helper methods
+template<typename T>
+void printPath (Node<T> *src, Node<T> *dest, const std::vector<Node<T>* > &prev);
+
+template<typename T>
+inline bool operator<(const Node<T> *a, const Node<T> *b) {
+  return (a->getWeight() < b->getWeight());
+}
+
 namespace graph {
-
-  template<typename T>
-  inline bool operator<(const Node<T> *a, const Node<T> *b) {
-    return (a->getWeight() < b->getWeight());
-  }
   
-  
-  /*
-   * Prints the path of node ID's given the source, destination, and a vector showing each node's
-   * previous node in the order of traversal
-   */
-  template<typename T>
-  void printPath (Node<T> *src, Node<T> *dest, const std::vector<Node<T>* > &prev) {
-    Node<T>* nodePtr = dest;
-    
-    std::vector<int> path; // traces the path by following vector of previous nodes
-    path.push_back(nodePtr->getID());
-    
-    while (nodePtr != src) {
-      nodePtr = prev[nodePtr->getID()];
-      path.push_back(nodePtr->getID());
-    }
-    
-    reverse(path.begin(), path.end()); // reverses the path to start with source node
-    
-    std::cout << "(";
-    // prints each node ID, followed by the delimiter '->'
-    copy(path.begin(), path.end()-1, std:: ostream_iterator<int>(std::cout, " -> "));
-    std::cout << path.back() << ")"; //prints last element without '->'
-  }
-
   /*
    * Finds the shortest path between two nodes, given that all edge weights
    * are positive
@@ -95,16 +75,23 @@ namespace graph {
 	if (edge->getStart()->getWeight() + edge->getWeight() <=
 	    edge->getEnd()->getWeight()) {
 	  
-	edge->getEnd()->setWeight(edge->getStart()->getWeight() + edge->getWeight());
-	prevNode[edge->getEnd()->getID()] = edge->getStart();
+	  edge->getEnd()->setWeight(edge->getStart()->getWeight() + edge->getWeight());
+	  prevNode[edge->getEnd()->getID()] = edge->getStart();
 	}
       }
     }
     
-    if (hasNegativeCycle(g)) {
-      throw std::runtime_error("Graph contains negative-weight cycle");
+    // Checks for Negative Cycle
+    for (size_t i = 0; i < g.size(); i++) {
+      for (auto& edge : g.adjacent(g.node(i))) {
+	if (edge->getStart()->getWeight() + edge->getWeight() <
+	    edge->getEnd()->getWeight()) {
+	  
+	   throw std::runtime_error("Graph contains negative-weight cycle");
+	}
+      }
     }
-    
+
     if (print) {
       printPath(src ,dest, prevNode);
       std::cout << " => ";
@@ -142,8 +129,41 @@ namespace graph {
       }
     }
 
-    if (hasNegativeCycle(g)) {
-       throw std::runtime_error("Graph contains negative-weight cycle");
+    // Checks for Negative Cycle
+    for (size_t i = 0; i < g.size(); i++) {
+      for (auto& edge : g.adjacent(g.node(i))) {
+	if (edge->getStart()->getWeight() + edge->getWeight() <
+	    edge->getEnd()->getWeight()) {
+	  
+	   throw std::runtime_error("Graph contains negative-weight cycle");
+	}
+      }
     }
+    
   }
 }
+
+
+/*
+ * Prints the path of node ID's given the source, destination, and a vector showing each node's
+ * previous node in the order of traversal
+ */
+template<typename T>
+void printPath (Node<T> *src, Node<T> *dest, const std::vector<Node<T>* > &prev) {
+  Node<T>* nodePtr = dest;
+  
+  std::vector<int> path; // traces the path by following vector of previous nodes
+  path.push_back(nodePtr->getID());
+    
+  while (nodePtr != src) {
+    nodePtr = prev[nodePtr->getID()];
+    path.push_back(nodePtr->getID());
+  }
+  
+  reverse(path.begin(), path.end()); // reverses the path to start with source node
+  
+  std::cout << "(";
+  // prints each node ID, followed by the delimiter '->'
+  copy(path.begin(), path.end()-1, std:: ostream_iterator<int>(std::cout, " -> "));
+  std::cout << path.back() << ")"; //prints last element without '->'
+}  

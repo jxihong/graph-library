@@ -6,6 +6,7 @@
 #include <map>
 #include <stack>
 #include <queue>
+#include <set>
 #include <string>
 #include <algorithm>
 #include <fstream>
@@ -80,6 +81,9 @@ public:
 
   // Returns node with the specified ID
   inline Node<T> * node(int id) const { return _nodes[id]; }
+  
+  // Returns whether the graph is directed
+  inline bool isDirected() const { return _isDirected; }
 
   // Connects two existing nodes
   void addEdge(int from, int to, T weight);
@@ -89,13 +93,17 @@ public:
   void removeEdge(int from, int to);
 
   void removeNode(int id);
-     
+  
+  // Computes number of incoming and outgoing edges
+  size_t inDegree(const Node<T> *n) const;
+  size_t outDegree(const Node<T> *n) const;
+
   // Returns vector of all outgoing edges from a node
   const std::list<EdgePtr<T> > & adjacent(const Node<T> *n) const;
   
   // Sets all nodes as not visited with weight INFINITY
   void reset();
-
+  
   // Prints the graph in the following format:
   // NodeID: Edge Edge ... // Node 1 and its Outgoing Edges
   // ...
@@ -113,9 +121,6 @@ public:
     return os;
   }
 
-  // Checks if the graph has any negative cycles. Returns false if the graph
-  // doesn't, and true if it does
-  friend bool hasNegativeCycle<T>(const AdjacencyList&);
 };
 
 template<typename T>
@@ -193,6 +198,24 @@ inline void AdjacencyList<T>::removeNode(int id) {
 }
 
 template<typename T>
+inline size_t AdjacencyList<T>::inDegree(const Node<T> *n) const {
+  size_t deg = 0;
+  for (const auto& i : _graph) {
+    for (auto& edge : i.second) {
+      if (edge->getEnd() == n) {
+	deg++;
+      }
+    }
+  }
+  return deg;
+}
+
+template<typename T>
+inline size_t AdjacencyList<T>::outDegree(const Node<T> *n) const {
+  return _graph[n->getID()].size();
+}
+
+template<typename T>
 inline const std::list<EdgePtr<T> > & AdjacencyList<T>::adjacent(const Node<T> *n) const {
   typename std::map<int, std::list<EdgePtr<T> > >::const_iterator iter = _graph.find(n->getID());
   if (iter == _graph.end()) {
@@ -204,21 +227,6 @@ inline const std::list<EdgePtr<T> > & AdjacencyList<T>::adjacent(const Node<T> *
 template<typename T>
 inline void AdjacencyList<T>::reset() {
   for_each (_nodes.begin(), _nodes.end(), ResetNode()); 
-}
-
-template<typename T>
-bool hasNegativeCycle(const AdjacencyList<T> &g) {
-  for (const auto& i : g._graph) {
-    // Loops over each edge on the graph
-    for (auto& edge : i.second) {
-      if (edge->getStart()->getWeight() + edge->getWeight() <
-	  edge->getEnd()->getWeight()) {
-
-	return true;
-      }
-    }
-  }
-  return false;
 }
 
 #endif // _ADJLIST_HH_

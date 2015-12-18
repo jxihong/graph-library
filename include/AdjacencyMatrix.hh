@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <queue>
+#include <set>
 #include <string>
 #include <algorithm>
 #include <fstream>
@@ -64,12 +65,18 @@ public:
   inline size_t size() { return _nodes.size(); }
 
   inline Node<T> *node(int id) const { return _nodes[id]; }
+  
+  inline bool isDirected() const { return _isDirected; }
 
   // Connects two existing nodes
   void addEdge(int from, int to, T weight);
   void addNode(int id);
 
   void removeEdge(int from, int to);
+  
+  // Computes number of incoming and outgoing edges
+  size_t inDegree(const Node<T> *n) const;
+  size_t outDegree(const Node<T> *n) const;
 
   // Returns a list of the non-null edges adjacent to specified node
   const std::list<EdgePtr<T> > adjacent(const Node<T> *n) const;
@@ -92,9 +99,6 @@ public:
     }
     return os;
   }
-  
-  // Checks if the graph as any negative cycles.
-  friend bool hasNegativeCycle<T>(const AdjacencyMatrix&);
 };
 
 template<typename T>
@@ -157,7 +161,26 @@ inline void AdjacencyMatrix<T>::removeEdge(int from, int to) {
     _graph[to][from] = NULL;
   }
 }
- 
+
+template<typename T>
+inline size_t AdjacencyMatrix<T>::inDegree(const Node<T> *n) const {
+  size_t deg = 0;
+  for (size_t i = 0; i < _graph.size(); i++) {
+    for (auto &edge : _graph[i]) {
+      if (edge->getEnd() == n) {
+	deg++;
+      }
+    }
+  }
+  return deg;
+}
+
+
+template<typename T>
+inline size_t AdjacencyMatrix<T>::outDegree(const Node<T> *n) const{
+  return _graph[n->getID()].size();
+}
+
 template<typename T>
 inline const std::list<EdgePtr<T> > AdjacencyMatrix<T>::adjacent(const Node<T> *n) const {
   std::list<EdgePtr<T> > edges;
@@ -174,22 +197,6 @@ inline const std::list<EdgePtr<T> > AdjacencyMatrix<T>::adjacent(const Node<T> *
 template<typename T>
 inline void AdjacencyMatrix<T>::reset() {
   for_each (_nodes.begin(), _nodes.end(), ResetNode());
-}
-
-template<typename T>
-bool hasNegativeCycle(const AdjacencyMatrix<T> &g) {
-  for (size_t i = 0; i < g._graph.size(); i++) {
-    for (auto& edge : g._graph[i]) {
-      if (edge != NULL) {
-	if (edge->getStart()->getWeight() + edge->getWeight() <
-	    edge->getEnd()->getWeight()) {
-	  
-	  return true;
-	}
-      }
-    }
-  }
-  return false;
 }
  
 #endif //_ADJMATRIX_HH_

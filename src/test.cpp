@@ -1,5 +1,6 @@
 #include "shortest_path.cpp"
 #include "search.cpp"
+#include "sort.cpp"
 
 #include <iomanip>
 
@@ -39,6 +40,11 @@ int main(int argc, char *argv[]) {
   cout << fixed << setprecision(1);
   cout << "Graph from File:" << endl;
   cout << my_graph << endl;
+  
+  (!hasCycle<double>(my_graph)) ? cout << "Graph is cyclic. " << endl : 
+    cout << "Graph contains no cycles. " << endl;
+  
+  cout << endl;
 
   try {
     cout << "Graph Algorithms." << endl;
@@ -60,9 +66,8 @@ int main(int argc, char *argv[]) {
     cout << endl;
 
     cout << "4. All-Pairs Shortest Path:" << endl;
-
-    vector<vector<double> > distances;
     
+    vector<vector<double> > distances; 
     FloydWarshall(my_graph, distances);  
     for (size_t i = 0; i < my_graph.size(); i++) {
       cout << i << ": ";
